@@ -17,6 +17,10 @@ use TomLingham\Searchy\Facades\Searchy;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use App\Http\Transformers\UserTransformer;
+
+use Dingo\Api\Auth\Provider\OAuth2;
+use App\Order;
 
 class UserController extends Controller
 {
@@ -57,17 +61,6 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
     {
         //
     }
@@ -206,6 +199,21 @@ class UserController extends Controller
                         ->get();
 
         return response()->json($users);
+    }
+
+    public function show()
+    {
+
+        $orders = (new Order())->getOrdersById(1);
+
+        return $this->response->array($orders);
+    }
+
+    public function middlewares($id)
+    {
+        $user = User::findOrFail($id);
+        $this->logger->info("GET user info.");
+        return $this->response->array($user->toArray());
     }
 }
 
