@@ -9,17 +9,70 @@ class Tree extends Nodes
 {
     protected $table = "m_o_d_e_l_s";
 
+    protected $parentColumn = 'parent_id';
+
+    protected $leftColumn = 'lft';
+
+    protected $rightColumn = 'rgt';
+
+    protected $depthColumn = 'depth';
+
     public function test()
     {
-        $root = Tree::create(['name' => 'Root', 'parent_id' => 0]);
+        $root = Tree::create(['name' => 'Root']);
 
         return $root;
     }
 
+    /**
+     * 插入节点
+     */
     public function tq()
     {
-        $node = Tree::where('name', '=', 'Root')->first();
+        $root = Tree::where(['name' => 'Root'])->first();
 
-        return $node->getDescendantsAndSelf();
+        $child1 = Tree::create(['name' => 'child']);
+
+        $ret = $child1->makeChildOf($root);
+
+        return $ret;
+    }
+
+    public function level()
+    {
+        $node = Tree::where(['name' => 'Root'])->first();
+
+        $level = $node->getLevel();
+
+        return [
+            'level' => $level,
+        ];
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -32,6 +32,8 @@ $api->version('v1', function($api){
 
         $api->get('users/tq', 'UserController@tq');
 
+        $api->get('users/level', 'UserController@level');
+
     });
 });
 

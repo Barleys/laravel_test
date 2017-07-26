@@ -103,7 +103,6 @@ class UserController extends Controller
         //
     }
 
-
     /**
      * @apiGroup User
      * @apiVersion 0.1.0
@@ -322,6 +321,13 @@ class UserController extends Controller
         $obj = (new Tree())->tq();
 
         return response()->json($obj);
+    }
+
+    public function level()
+    {
+        $level = (new Tree())->level();
+
+        return response()->json($level);
     }
 }
 
