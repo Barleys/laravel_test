@@ -146,7 +146,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
-        TomLingham\Searchy\SearchyServiceProvider::class
+        TomLingham\Searchy\SearchyServiceProvider::class,
+        Baum\Providers\BaumServiceProvider::class,
 
     ],
 

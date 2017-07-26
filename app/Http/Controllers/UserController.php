@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Pay;
+use App\Tag;
+use App\Tree;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -10,6 +13,7 @@ use Dingo\Api\Exception\StoreResourceFailedException;
 //use App\Http\Controllers\Controller;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 
@@ -100,17 +104,40 @@ class UserController extends Controller
     }
 
 
-    /** js
-     * @api {post} /api/v1/user/signup User register
+    /**
+     * @apiGroup User
+     * @apiVersion 0.1.0
+     * @api {post} /api/v1/user/signup 用户注册
      * @apiName signup
-     * @apiDescription register users
-     * @apiSuccess (Reponse 200) {number} code 200
-     * @apiSuccess (Reponse 200) {json} [data='""']
-     * @apiSuccessExample {json} Response 200 Example
-     *      HTTP/1.1 200 OK
+     * @apiParam (参数) {string} name 用户名称
+     * @apiParam (参数) {string} password 用户密码
+     * @apiDescription 用户注册
+     * @apiSuccess (成功) {number} HTTP_CODE 201
+     * @apiSuccess (成功) {json} DATA 响应的数据
+     * @apiSuccessExample {json} 成功示例
+     *      HTTP/1.1 201 Created
      *      {
-     *          "code": 200,
-     *          "data": ""
+     *          "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjUxLCJpc3MiOiJodHRwOi8vbGFyYXRlc3QuY29tL3B1YmxpYy9pbmRleC5waHAvYXBpL3YxL3VzZXIvc2lnbnVwIiwiaWF0IjoxNTAwOTUyNjczLCJleHAiOjE1MDA5NTYyNzMsIm5iZiI6MTUwMDk1MjY3MywianRpIjoiUFJxYXVLQmZzWWV5ZTNxSyJ9.qXOmezxVBUl6joNaTnMOmPsdTg0Y3Ykexe-PCfwyK7M"
+     *      }
+     * @apiError (失败) {number} HTTP_CODE HTTP响应代码
+     * @apiError (失败) {json} DATA 响应的数据
+     * @apiErrorExample {json} 失败示例
+     *      HTTP/1.1 422 Unprocessable Entity
+     *      {
+     *          "message": "Could not create new user.",
+     *          "errors": {
+     *              "password": [
+     *                  "The password field is required."
+     *              ]
+     *          },
+     *          "status_code": 422
+     *      }
+     *
+     *      HTTP/1.1 500 Internal Server Error
+     *      {
+     *          "message": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'admin101@qq.com' for key 'users_email_unique' (SQL: insert into `users` (`name`, `password`, `email`, `updated_at`, `created_at`) values (admin, admin23, admin101@qq.com, 2017-07-25 03:30:34, 2017-07-25 03:30:34))",
+     *          "code": "23000",
+     *          "status_code": 500
      *      }
      */
     public function signup()
@@ -122,7 +149,7 @@ class UserController extends Controller
 
         $payload = app('request')->only('name', 'password');
 
-        $payload['email'] = 'admin'. rand(100, 999) . '@qq.com';
+        $payload['email'] = 'admin'. rand(100, 101) . '@qq.com';
 
         $validator = app('validator')->make($payload, $rules);
 
@@ -136,10 +163,10 @@ class UserController extends Controller
 
             $token = JWTAuth::fromUser($user);
 
-            return response()->json(['token' => $token], 200);
+            return response()->json(['token' => $token], 201);
         }
 
-        return response()->json(['error' => 'error'], 200);
+        return response()->json(['error' => 'error'], 500);
     }
 
     public function login(Request $request)
@@ -214,6 +241,87 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $this->logger->info("GET user info.");
         return $this->response->array($user->toArray());
+    }
+
+    public function pays()
+    {
+        $pays = (new User())->getPaysById(2);
+
+        return $this->response->array($pays->toArray());
+    }
+
+
+
+    /************************Article tag relations********************************/
+
+    /**
+     * @apiGroup About
+     *
+     * @api {get} /about/events 大事记列表
+     * @apiVersion 0.1.0
+     * @apiSuccessExample {json} Success-Response:
+     * HTTP/1.1 200 OK
+     * {
+     *  "events_list": [
+     *   {
+     *     "id": 4,
+     *     "title": "北大金秋正式成立3",
+     *     "time_node": "2017-06-23 13:34:38",
+     *     "avatar": "URL"
+     *   },
+     *   {
+     *     "id": 3,
+     *     "title": "北大金秋正式成立2",
+     *     "time_node": "2017-06-23 13:31:40",
+     *     "avatar": "URL"
+     *   },
+     *   {
+     *     "id": 2,
+     *     "title": "北大金秋正式成立1",
+     *     "time_node": "2017-06-23 13:31:38",
+     *     "avatar": "URL"
+     *   },
+     *   {
+     *     "id": 1,
+     *     "title": "北大金秋正式成立",
+     *     "time_node": "2017-06-23 13:29:38",
+     *     "avatar": "URL"
+     *   }
+     *  ]
+     * }
+     */
+    public function tags()
+    {
+        $tags = (new Tag())->getTagsById(2);
+
+        return $this->response->array($tags->toArray());
+    }
+
+    public function info($id)
+    {
+        if($id > 100){
+            return $this->response->array([
+                'error' => "ur id is ({$id}) bigger than 100",
+            ]);
+        }
+
+        return $this->response->array([
+            'id' => $id,
+        ]);
+    }
+
+    public function nodes()
+    {
+        $obj = (new Tree())->test();
+
+        return response()->json($obj);
+    }
+
+    public function tq()
+    {
+        $obj = (new Tree())->tq();
+
+        return response()->json($obj);
     }
 }
 

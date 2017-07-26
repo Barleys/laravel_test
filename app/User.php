@@ -36,4 +36,16 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+    public function hasManyPays()
+    {
+        return $this->hasMany('App\Pay', 'user_id', 'id');
+    }
+
+    public function getPaysById($userid)
+    {
+        $pays = User::find($userid)->hasManyPays()->get();
+
+        return $pays;
+    }
 }

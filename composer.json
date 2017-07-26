@@ -11,7 +11,8 @@
         "tymon/jwt-auth": "0.5.*",
         "tom-lingham/searchy": "^2.0",
         "monolog/monolog": "^1.23",
-	"lucadegasperi/oauth2-server-laravel": "5.1.*"
+	"lucadegasperi/oauth2-server-laravel": "5.1.*",
+        "baum/baum": "~1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
