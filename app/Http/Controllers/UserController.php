@@ -38,6 +38,7 @@ class UserController extends Controller
     }
 
     use Helpers;
+
     /**
      * Display a listing of the resource.
      *
@@ -61,7 +62,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -72,7 +73,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -83,8 +84,8 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -95,7 +96,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -148,7 +149,7 @@ class UserController extends Controller
 
         $payload = app('request')->only('name', 'password');
 
-        $payload['email'] = 'admin'. rand(100, 101) . '@qq.com';
+        $payload['email'] = 'admin' . rand(100, 101) . '@qq.com';
 
         $validator = app('validator')->make($payload, $rules);
 
@@ -158,7 +159,7 @@ class UserController extends Controller
 
         $user = User::create($payload);
 
-        if($user->save()){
+        if ($user->save()) {
 
             $token = JWTAuth::fromUser($user);
 
@@ -174,7 +175,7 @@ class UserController extends Controller
 
         $user = User::where($credentials)->first();
 
-        if(!$user){
+        if (!$user) {
             return response()->json(['error' => 'invalid_name_or_passwrod'], 401);
         }
 
@@ -188,13 +189,13 @@ class UserController extends Controller
 
     public function auth(Request $request)
     {
-        try{
-            if(!$user = JWTAuth::parseToken()->authenticate()) {
+        try {
+            if (!$user = JWTAuth::parseToken()->authenticate()) {
                 return response()->json(['user_not_found'], 404);
             }
-        }catch(Tymon\JWTAuth\Exceptions\TokenExpiredException $e){
+        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
             return response()->json(['token_expired'], $e->getStatusCode());
-        }catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
             return response()->json(['token_invalid'], $e->getStatusCode());
         } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
             return response()->json(['token_absent'], $e->getStatusCode());
@@ -219,10 +220,10 @@ class UserController extends Controller
         $param = $request->input('param');
 
         $users = Searchy::search('users')
-                        ->fields(['name', 'email'])
-                        ->query($param)
-                        ->select('name', 'email', 'created_at', 'updated_at')
-                        ->get();
+            ->fields(['name', 'email'])
+            ->query($param)
+            ->select('name', 'email', 'created_at', 'updated_at')
+            ->get();
 
         return response()->json($users);
     }
@@ -298,7 +299,7 @@ class UserController extends Controller
 
     public function info($id)
     {
-        if($id > 100){
+        if ($id > 100) {
             return $this->response->array([
                 'error' => "ur id is ({$id}) bigger than 100",
             ]);
@@ -329,36 +330,68 @@ class UserController extends Controller
 
         return response()->json($level);
     }
+
+    public function upload()
+    {
+        return view('upload');
+    }
+
+    public function doupload(Request $request)
+    {
+        if (!$request->isMethod('POST')) {
+            return $this->response->array([
+                'error' => 'request method error'
+            ]);
+        }
+
+        $post = $request->input();
+
+        $file = $request->file('file');
+
+        $filepath = app_path('../storage/uploads');
+
+        //保存片段
+        if (!$file->isValid()) {
+            return $this->response->array([
+                'error' => 'file is invalid.',
+            ]);
+        }
+
+        $index = ($post['chunk'] == "false") ? $post['chunks'] : $post['chunk'];
+
+        $newName = $index . '.part';
+
+        if (!$file->move($filepath, $newName)) {
+            $this->response->array(['error' => 'move_failed']);
+        }
+
+        if ($post['chunk'] != "false") {
+            return $this->response->array(['error' => 'piece']);
+        }
+
+        $dirs = scandir($filepath);
+
+        unset($dirs[0], $dirs[1]);
+
+        $fp = fopen($filepath . '/' . $post['name'], 'a');
+
+        rsort($dirs);
+
+        foreach ($dirs as $item) {
+
+            $temp = $filepath . '/' .$item;
+
+            $buff = file_get_contents($temp);
+
+            fwrite($fp, $buff);
+        }
+
+        fclose($fp);
+
+        $know = ($post['chunk'] == "false") ? "complete" : "piece";
+
+        return $this->response->array(['error' => $know]);
+
+    }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -148,6 +148,7 @@ return [
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         TomLingham\Searchy\SearchyServiceProvider::class,
         Baum\Providers\BaumServiceProvider::class,
+        Peinhu\AetherUpload\AetherUploadServiceProvider::class,
 
     ],
 

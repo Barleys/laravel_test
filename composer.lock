@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "08df2bb77e1ef34c84c167643bd5faeb",
+    "content-hash": "872021fcf21f4ec38dbb347a66216105",
     "packages": [
         {
             "name": "baum/baum",
@@ -1462,6 +1462,49 @@
                 "random"
             ],
             "time": "2017-03-13T16:22:52+00:00"
+        },
+        {
+            "name": "peinhu/aetherupload-laravel",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/peinhu/AetherUpload-Laravel.git",
+                "reference": "e39ae7f5a8e4e41d3547fe28bcfb17d31437bf8f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/peinhu/AetherUpload-Laravel/e39ae7f5a8e4e41d3547fe28bcfb17d31437bf8f.zip",
+                "reference": "e39ae7f5a8e4e41d3547fe28bcfb17d31437bf8f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Peinhu\\AetherUpload\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Payne Hu",
+                    "email": "huyang110yahoo@gmail.com",
+                    "homepage": "http://www.2ndrenais.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Upload large files for Laravel 上传 大文件 laravel包",
+            "keywords": [
+                "big",
+                "large",
+                "大文件"
+            ],
+            "time": "2017-07-24 09:59:19"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -4072,7 +4115,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "dingo/api": 20
+        "dingo/api": 20,
+        "peinhu/aetherupload-laravel": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

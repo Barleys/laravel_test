@@ -1,6 +1,6 @@
 <?php
 
-Route::get('users/list', 'UserController@list');
+Route::get('users/upload', 'UserController@upload');
 
 $api = app('Dingo\Api\Routing\Router');
 
@@ -33,6 +33,8 @@ $api->version('v1', function($api){
         $api->get('users/tq', 'UserController@tq');
 
         $api->get('users/level', 'UserController@level');
+
+        $api->post('users/doupload', 'UserController@doupload');
 
     });
 });
