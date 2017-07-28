@@ -6,12 +6,39 @@ Route::get('users/pdf', 'UserController@pdf');
 
 Route::get('users/pdfdown', 'UserController@pdfdown');
 
+
+/**************************************/
+
+Route::get('auth/login', 'Auth\AuthController@getLogin');
+
+Route::post('auth/login', 'Auth\AuthController@postLogin');
+
+Route::get('auth/logout', 'Auth\AuthController@getLogout');
+
+Route::get('auth/register', 'Auth\AuthController@getRegister');
+
+Route::post('auth/register', 'Auth\AuthController@postRegister');
+
+
+Route::get('/', 'TaskController@list');
+
+Route::post('/task', 'TaskController@task');
+
+Route::delete('/task/id/{id}', 'TaskController@delete');
+
+
+
+
+/**************************************/
+
+
 $api = app('Dingo\Api\Routing\Router');
 
-$api->version('v1', function($api){
+$api->version('v1', function ($api) {
 
-    $api->group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function($api){
+    $api->group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function ($api) {
 
+        /*User controller*/
         $api->post('user/login', 'UserController@login');
 
         $api->post('user/signup', 'UserController@signup');

@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use App\Task;
 
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
@@ -47,5 +48,10 @@ class User extends Model implements AuthenticatableContract,
         $pays = User::find($userid)->hasManyPays()->get();
 
         return $pays;
+    }
+
+    public function tasks()
+    {
+        $this->hasMany(Task::class);
     }
 }
