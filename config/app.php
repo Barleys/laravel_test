@@ -149,6 +149,7 @@ return [
         TomLingham\Searchy\SearchyServiceProvider::class,
         Baum\Providers\BaumServiceProvider::class,
         Peinhu\AetherUpload\AetherUploadServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -200,6 +201,7 @@ return [
         'JWTAuth'   => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory'=> Tymon\JWTAuth\Facades\JWTFactory::class,
         'Searchy'   => TomLingham\Searchy\Facades\Searchy::class,
+        'PDF'       => Barryvdh\DomPDF\Facade::class,
 
     ],
 

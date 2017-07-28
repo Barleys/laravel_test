@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App;
 use App\Pay;
 use App\Tag;
 use App\Tree;
@@ -394,4 +395,71 @@ class UserController extends Controller
 
     }
 
+    public function pdf()
+    {
+        $pdf = App::make('dompdf.wrapper');
+
+        $pdf->loadHTML('<h1 color="red">PDF TEST</h1>');
+
+        return $pdf->stream();
+    }
+
+    public function pdfdown()
+    {
+        $pdf = PDF::loadView('pdf.invoice', $data);
+
+        return $pdf->download('invoice.pdf');
+    }
+
+
+    /*helper array functions and collect*/
+    public function arraytest()
+    {
+        $arr = [
+            'a' => 'b',
+            'c' => [
+                'name' => 'admin',
+                'age'  => 1,
+                'desc' => [
+                    'height' => 12,
+                    'weight' => 3,
+                ]
+            ]
+        ];
+
+        $val = array_get($arr, 'c.desc.height');
+
+        return $this->response->array([
+            'val' => $val,
+        ]);
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

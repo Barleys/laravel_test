@@ -13,7 +13,8 @@
         "monolog/monolog": "^1.23",
 	"lucadegasperi/oauth2-server-laravel": "5.1.*",
         "baum/baum": "~1.1",
-        "peinhu/aetherupload-laravel": "dev-master"
+        "peinhu/aetherupload-laravel": "dev-master",
+        "barryvdh/laravel-dompdf": "^0.8.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

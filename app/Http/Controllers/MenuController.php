@@ -15,7 +15,6 @@ class MenuController extends Controller
     {
         $root = Tag::create(['name' => 'Root']);
 
-
     }
 
 }

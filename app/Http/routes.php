@@ -2,6 +2,10 @@
 
 Route::get('users/upload', 'UserController@upload');
 
+Route::get('users/pdf', 'UserController@pdf');
+
+Route::get('users/pdfdown', 'UserController@pdfdown');
+
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', function($api){
@@ -35,6 +39,8 @@ $api->version('v1', function($api){
         $api->get('users/level', 'UserController@level');
 
         $api->post('users/doupload', 'UserController@doupload');
+
+        $api->get('users/arraytest', 'UserController@arraytest');
 
     });
 });
