@@ -8,14 +8,26 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Task;
+use App\Repositories\TaskRepository;
 
 class TaskController extends Controller
 {
     use Helpers;
 
-    public function __construct()
+    protected $tasks;
+
+    public function __construct(TaskRepository $task)
     {
         $this->middleware('auth');
+
+        $this->tasks = $task;
+    }
+
+    public function index(Request $request)
+    {
+        return view('tasks.index', [
+            'tasks' => $this->tasks->forUser($request->user()),
+        ]);
     }
 
     public function list()
@@ -29,23 +41,23 @@ class TaskController extends Controller
 
     public function task(Request $request)
     {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|max:255',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+        ]);
 
-            if ($validator->fails()) {
-                return redirect()
-                    ->withInput()
-                    ->withErrors($validator);
-            }
+        if ($validator->fails()) {
+            return redirect()
+                ->withInput()
+                ->withErrors($validator);
+        }
 
-            $task = new \App\Task();
+        $task = new \App\Task();
 
-            $task->name = $request->name;
+        $task->name = $request->name;
 
-            $task->save();
+        $task->save();
 
-            return redirect('/');
+        return redirect('/');
     }
 
     public function delete($id)
