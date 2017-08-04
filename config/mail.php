@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => null, 'name' => null],
+    'from' => ['address' => 'zhangshuaibindiy@qq.com', 'name' => '邮件测试'],
 
     /*
     |--------------------------------------------------------------------------

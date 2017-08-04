@@ -11,9 +11,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\User;
 use Dingo\Api\Exception\StoreResourceFailedException;
-//use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Dingo\Api\Routing\Helpers;
-use Illuminate\Routing\Controller;
+//use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
@@ -26,19 +26,51 @@ use App\Http\Transformers\UserTransformer;
 
 use Dingo\Api\Auth\Provider\OAuth2;
 use App\Order;
+use Illuminate\Support\Facades\Redis;
+use App\Jobs\SendReminderEmail;
 
 class UserController extends Controller
 {
 
     private $logger = null;
+    private $redis = null;
 
     public function __construct()
     {
         $this->logger = new Logger('APP');
         $this->logger->pushHandler(new StreamHandler('../storage/logs/app.log', Logger::DEBUG));
+
+        $this->redis = Redis::connection('default');
     }
 
     use Helpers;
+
+    public function mail($id = 1)
+    {
+        $user = User::findOrFail($id);
+
+        $job = (new SendReminderEmail($user))->delay(10);
+
+        $stat = $this->dispatch($job);
+
+        if ($stat == 0) {
+            echo "OK";
+        }else{
+            echo "error: " . $stat;
+        }
+    }
+
+
+    public function redis()
+    {
+        $this->redis->set('test', 'TEST111');
+
+        $name = $this->redis->get('test');
+
+        echo "<pre>";
+        var_dump($name);
+        echo "</pre>";
+    }
 
     /**
      * Display a listing of the resource.
@@ -380,7 +412,7 @@ class UserController extends Controller
 
         foreach ($dirs as $item) {
 
-            $temp = $filepath . '/' .$item;
+            $temp = $filepath . '/' . $item;
 
             $buff = file_get_contents($temp);
 
@@ -419,7 +451,7 @@ class UserController extends Controller
             'a' => 'b',
             'c' => [
                 'name' => 'admin',
-                'age'  => 1,
+                'age' => 1,
                 'desc' => [
                     'height' => 12,
                     'weight' => 3,

@@ -14,7 +14,9 @@
 	"lucadegasperi/oauth2-server-laravel": "5.1.*",
         "baum/baum": "~1.1",
         "peinhu/aetherupload-laravel": "dev-master",
-        "barryvdh/laravel-dompdf": "^0.8.0"
+        "barryvdh/laravel-dompdf": "^0.8.0",
+        "predis/predis": "^1.1",
+        "phpmailer/phpmailer": "^5.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

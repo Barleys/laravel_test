@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Asia/Shanghai');
+
 return [
 
     "ENABLE_EXAMPLE_PAGE" => true, # 启用示例页面，访问域名/aetherupload，生产环境下请将该选项设置为false
