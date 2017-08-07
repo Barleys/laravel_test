@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use PHPMailer;
+use Illuminate\Support\Facades\Crypt;
 
 class SendReminderEmail extends Job implements SelfHandling, ShouldQueue
 {
@@ -51,7 +52,7 @@ class SendReminderEmail extends Job implements SelfHandling, ShouldQueue
 
         $mailer->Username = 'zhangshuaibindiy@qq.com';
 
-        $mailer->Password = 'gxvjoroivmlobced';
+        $mailer->Password = 'gxvjoroivmlobcedw';
 
         $mailer->setFrom('zhangshuaibindiy@qq.com', 'TEST');
 
@@ -63,7 +64,7 @@ class SendReminderEmail extends Job implements SelfHandling, ShouldQueue
 
         $stat = $mailer->send();
 
-        echo $stat ? 'ok' : 'failedsssserwwe';
+        echo $stat ? 'ok' : 'failed!';
     }
 
     public function failed()

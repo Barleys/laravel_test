@@ -6,6 +6,12 @@ Route::group(['domain' => 'admin.laratest.com'], function(){
 
     Route::get('/mail', 'UserController@mail');
 
+    Route::get('/test/{id}', ['middleware' => 'test', function(){
+        echo  'in range.';
+    }]);
+
+    Route::get('/crypt', 'UserController@crypt');
+
 });
 //
 //Route::group(['domain' => 'm.laratest.com'], function(){

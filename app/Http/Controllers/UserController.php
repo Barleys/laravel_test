@@ -28,6 +28,8 @@ use Dingo\Api\Auth\Provider\OAuth2;
 use App\Order;
 use Illuminate\Support\Facades\Redis;
 use App\Jobs\SendReminderEmail;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Crypt;
 
 class UserController extends Controller
 {
@@ -45,6 +47,27 @@ class UserController extends Controller
 
     use Helpers;
 
+    public function test(Request $request)
+    {
+        echo $request->input('id') . 'is in range.';
+    }
+
+    public function crypt()
+    {
+        $user = User::findOrFail(1);
+
+        $c = Crypt::encrypt($user->id);
+
+        return response()->json(['c' => $c, 'd' => Crypt::decrypt($c)]);
+    }
+
+    public function purchasePodcast($userId, $podcastId)
+    {
+        $pod = Podcast::findOrFail($podcastId);
+
+        Event::fire(new App\Events\PodcastWasPurchased($pod));
+    }
+
     public function mail($id = 1)
     {
         $user = User::findOrFail($id);
@@ -60,7 +83,6 @@ class UserController extends Controller
         }
     }
 
-
     public function redis()
     {
         $this->redis->set('test', 'TEST111');
@@ -70,71 +92,6 @@ class UserController extends Controller
         echo "<pre>";
         var_dump($name);
         echo "</pre>";
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     /**
