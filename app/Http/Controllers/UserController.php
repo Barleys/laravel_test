@@ -6,6 +6,7 @@ use App;
 use App\Pay;
 use App\Tag;
 use App\Tree;
+use Fenos\Notifynder\Facades\Notifynder;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -14,7 +15,6 @@ use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Http\Controllers\Controller;
 use Dingo\Api\Routing\Helpers;
 //use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 
@@ -23,13 +23,14 @@ use TomLingham\Searchy\Facades\Searchy;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use App\Http\Transformers\UserTransformer;
-
-use Dingo\Api\Auth\Provider\OAuth2;
 use App\Order;
 use Illuminate\Support\Facades\Redis;
 use App\Jobs\SendReminderEmail;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
+
+use Excel;
+
+use Fenos\Notifynder\Traits\Notifable;
 
 class UserController extends Controller
 {
@@ -45,7 +46,63 @@ class UserController extends Controller
         $this->redis = Redis::connection('default');
     }
 
+    public function hasMany(){}
+    public function morphMany(){}
+
     use Helpers;
+    use Notifable;
+
+    public function notice()
+    {
+        $user = User::find(1);
+
+//        $user->getNotifications($limit=null, $paginate=null, $order='desc');
+//        $user->getNotificationNotRead($limit =null, $paginate=null, $order='desc');
+//        $user->getNotification();
+//        $user->countNotification();
+//        $user->countNotificationNotRead();
+//        $user->readAllNotification();
+
+        $from_user_id = 1;
+        $to_user_to = 2;
+
+//        Notifynder::category('user.following')
+//            ->from($from_user_id)
+//            ->to($to_user_to)
+//            ->url()
+//            ->send();
+
+        $userNotified = User::find($to_user_to);
+
+        dd($userNotified);
+    }
+
+
+    public function exportExcel()
+    {
+        $cellData = User::all()->toArray();
+
+        Excel::create('用户表', function ($excel) use ($cellData) {
+            $excel->sheet('score', function ($sheet) use ($cellData) {
+                $sheet->rows($cellData);
+            });
+        })->export('xlsx');
+    }
+
+    public function importExcel()
+    {
+        $file = 'storage/uploads/users.xlsx';
+
+        Excel::load($file, function($reader){
+
+//            $reader->toArray()->al
+            $data = $reader->toArray();
+
+            echo "<pre>";
+            var_dump($data);
+            echo "</pre>";
+        });
+    }
 
     public function test(Request $request)
     {
@@ -78,7 +135,7 @@ class UserController extends Controller
 
         if ($stat == 0) {
             echo "OK";
-        }else{
+        } else {
             echo "error: " . $stat;
         }
     }

@@ -12,6 +12,17 @@ Route::group(['domain' => 'admin.laratest.com'], function(){
 
     Route::get('/crypt', 'UserController@crypt');
 
+    Route::get('/export', 'UserController@exportExcel');
+    Route::get('/import', 'UserController@importExcel');
+
+    Route::get('/notice', 'UserController@notice');
+
+    Route::get('/mathjax', function(){
+
+        return view('mathjax');
+
+    });
+
 });
 //
 //Route::group(['domain' => 'm.laratest.com'], function(){
